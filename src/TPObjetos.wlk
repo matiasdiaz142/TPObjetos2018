@@ -12,9 +12,10 @@ object rolando{
 	method habilidadLucha() = habilidadLucha + artefactos.map({artefacto => artefacto.unidadesLucha()}).sum()  
 	method agregarArtefacto(_artefacto) {artefactos.add(_artefacto)}
 	method removerArtefacto(_artefacto) {artefactos.remove(_artefacto)}
+	method removerTodosArtefactos(){artefactos.clear()}
 	method mayorHabilidadLuchaQueNivelDeHechiceria() = self.habilidadLucha() > self.nivelHechiceria()
 	//Cosas Punto 3
-	
+	method estaCargado() = artefactos.size() >= 5
 }
 //Cosas Punto 1
 object espectroMalefico{
@@ -22,12 +23,15 @@ object espectroMalefico{
 	var property poder
 	method esPoderoso() = nombre.length() > 15
 	method poder() = nombre.length()
+	//Para punto 3
+	method unidadesLucha() = self.poder()
 }
 
 object hechizoBasico{
 	var property poder = 10
 	method esPoderoso() = false
-	
+	//Para punto 3
+	method unidadesLucha() = poder
 }
 //Cosas Punto 2
 object espadaDelDestino{
@@ -45,5 +49,46 @@ object mascaraOscura{
 }
 //Cosas Punto 3
 object armadura{
-	
+	var property refuerzo
+	method unidadesLucha() = 2 + refuerzo.unidadesLucha()
+	//Falta si no tiene refuerzos
 }
+//Refuerzos para Armadura
+object cotaDeMalla{
+	method unidadesLucha() = 1
+}
+object bendicion{
+	var property poseedor = rolando
+	method unidadesLucha() = poseedor.nivelHechiceria()
+}
+object sinRefuerzo{
+	method unidadesLucha() = 0
+}
+//Fin Refuerzos
+
+object espejoFantastico{
+	var property poseedor = rolando
+	var unidadesLucha
+	//method mejorPertenencia() = poseedor.artefactos().max({artefacto => artefacto.unidadesLucha()})
+	method unidadesLucha(){
+		if(rolando.artefactos() == [self])
+		{
+			return 0
+		}
+		poseedor.removerArtefacto(self)
+		unidadesLucha = poseedor.artefactos().map({artefacto => artefacto.unidadesLucha()}).max()
+		rolando.agregarArtefacto(self)
+		return unidadesLucha
+	}
+	//Falta si solo tiene espejo fantastico como artefacto
+}
+
+//Tipo de hechizo preferido
+object libroHechizos{
+	var property hechizos = []
+	var property poder
+	method agregarHechizo(_hechizo) {hechizos.add(_hechizo)}
+	method poder() = hechizos.filter({hechizo => hechizo.esPoderoso()}).map({hechizo => hechizo.poder()}).sum()
+}
+
+
