@@ -52,7 +52,7 @@ object mascaraOscura{
 //Cosas Punto 3
 //Otro artefacto
 object armadura{
-	var property refuerzo
+	var property refuerzo = 2
 	method unidadesLucha() {
 		if(refuerzo == null)
 		{
@@ -93,4 +93,3 @@ object libroHechizos{
 	method agregarHechizo(_hechizo) {hechizos.add(_hechizo)}
 	method poder() = hechizos.filter({hechizo => hechizo.esPoderoso()}).map({hechizo => hechizo.poder()}).sum()
 }
-
