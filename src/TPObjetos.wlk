@@ -18,6 +18,7 @@ object rolando{
 	method estaCargado() = artefactos.size() >= 5
 }
 //Cosas Punto 1
+//Hechizos posibles para Hechizo Preferido
 object espectroMalefico{
 	var property nombre = "Espectro malefico"
 	var property poder
@@ -34,6 +35,7 @@ object hechizoBasico{
 	method unidadesLucha() = poder
 }
 //Cosas Punto 2
+//Artefactos para Rolando
 object espadaDelDestino{
 	method unidadesLucha() = 3
 }
@@ -48,10 +50,16 @@ object mascaraOscura{
 	method unidadesLucha() = 4.max(fuerzaOscura/2)
 }
 //Cosas Punto 3
+//Otro artefacto
 object armadura{
 	var property refuerzo
-	method unidadesLucha() = 2 + refuerzo.unidadesLucha()
-	//Falta si no tiene refuerzos
+	method unidadesLucha() {
+		if(refuerzo == null)
+		{
+			return 2
+		}
+		return 2 + refuerzo.unidadesLucha()
+	}
 }
 //Refuerzos para Armadura
 object cotaDeMalla{
@@ -61,15 +69,10 @@ object bendicion{
 	var property poseedor = rolando
 	method unidadesLucha() = poseedor.nivelHechiceria()
 }
-object sinRefuerzo{
-	method unidadesLucha() = 0
-}
-//Fin Refuerzos
 
 object espejoFantastico{
 	var property poseedor = rolando
 	var unidadesLucha
-	//method mejorPertenencia() = poseedor.artefactos().max({artefacto => artefacto.unidadesLucha()})
 	method unidadesLucha(){
 		if(rolando.artefactos() == [self])
 		{
@@ -80,7 +83,7 @@ object espejoFantastico{
 		rolando.agregarArtefacto(self)
 		return unidadesLucha
 	}
-	//Falta si solo tiene espejo fantastico como artefacto
+	
 }
 
 //Tipo de hechizo preferido
@@ -90,5 +93,4 @@ object libroHechizos{
 	method agregarHechizo(_hechizo) {hechizos.add(_hechizo)}
 	method poder() = hechizos.filter({hechizo => hechizo.esPoderoso()}).map({hechizo => hechizo.poder()}).sum()
 }
-
 
