@@ -1,0 +1,60 @@
+import entrega2.*
+
+describe "Tests del Segundo Punto - Segunda Entrega"{
+	
+	const espectroMalefico = new Logos(nombre="espectro malefico",valorMultiplcacion=1)
+	const rolando = new Personaje(hechizoPreferido = espectroMalefico)
+	const espadaDestino = new Espada()
+	const mascaraOscura = new Mascara(indiceOscuridad=1,minimoPoder=4)
+	const collarDivino = new CollarDivino(perlas = 5)
+	
+	fixture {
+		rolando.agregarArtefacto(espadaDestino)
+		rolando.agregarArtefacto(collarDivino)
+		rolando.agregarArtefacto(mascaraOscura)
+	}
+	
+	test "Eliminando todos los artefactos, la habilidad de Rolando es 1" {
+		rolando.removerArtefacto(espadaDestino)
+		rolando.removerArtefacto(collarDivino)
+		rolando.removerArtefacto(mascaraOscura)
+		assert.equals(1,rolando.habilidadLucha())
+	}
+	test "Con todos los artefactos la habilidad de Rolando es 13" {
+		assert.equals(13,rolando.habilidadLucha())
+	}
+	
+	test "Con todos los artefactos y el collar divino con 3 perlas, la habilidad de Rolando es 11" {
+		collarDivino.perlas(3)
+		assert.equals(11,rolando.habilidadLucha())
+	}
+	
+	test "Con todos los artefactos y valor base de lucha en 8, la habilidad de Rolando es 20" {
+		rolando.baseLucha(8)
+		assert.equals(20,rolando.habilidadLucha())
+	}
+	
+	test "Ocurre un eclipse y el valor de lucha de la mascara oscura es de 5" {
+		fuerzaOscura.eclipse()
+		assert.equals(5,mascaraOscura.unidadesLucha())
+	}
+	
+	test "Con la Espada del Destino y Collar divino, la habilidad de Rolando es 9" {
+		rolando.removerArtefacto(mascaraOscura)
+		assert.equals(9,rolando.habilidadLucha())
+	}	
+	
+	test "El valor de lucha de la Mascara oscura(con indice 0 y min 4) de Rolando es 4" {
+		rolando.removerArtefacto(mascaraOscura)
+		const mascaraVacia = new Mascara(indiceOscuridad=0,minimoPoder=4)
+		rolando.agregarArtefacto(mascaraVacia)
+		assert.equals(4,mascaraVacia.unidadesLucha())
+	}	
+	
+	test "El valor de lucha de la Mascara oscura(con indice 0 y min 2) de Rolando es 2" {
+		rolando.removerArtefacto(mascaraOscura)
+		const mascaraVacia = new Mascara(indiceOscuridad=0,minimoPoder=2)
+		rolando.agregarArtefacto(mascaraVacia)
+		assert.equals(2,mascaraVacia.unidadesLucha())
+	}	
+}

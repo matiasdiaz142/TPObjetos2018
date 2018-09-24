@@ -1,0 +1,39 @@
+import entrega1.*
+
+describe "Tests del Primer Punto"{
+	fixture {
+		rolando.hechizoPreferido(espectroMalefico)
+	}
+	//Tests Primer Punto
+	
+	test "Nivel de hechicería de Rolando es 56 con Espectro Malefico de Hechizo Preferido" {
+		assert.equals(56,rolando.nivelHechiceria())
+	}
+	
+	test "Nivel de hechicería de Rolando es 125 con Espectro Malefico de Hechizo Preferido con nombre 'espectro superrecontramalefico muajajaja'." {
+		espectroMalefico.nombre("espectro superrecontramalefico muajajaja")
+		assert.equals(125,rolando.nivelHechiceria())
+	}
+	test "Nivel de hechicería de Rolando es 35 con Hechizo Basico de Hechizo Preferido" {
+		rolando.hechizoPreferido(hechizoBasico)
+		assert.equals(35,rolando.nivelHechiceria())
+	}
+
+	test "Nivel de hechicería de Rolando es 62 cuando ocurre un Eclipse" {
+		fuerzaOscura.eclipse()
+		assert.equals(61,rolando.nivelHechiceria())
+	}
+
+	test "Espectro Malefico es Poderoso con su nombre por defecto" {
+		assert.that(espectroMalefico.esPoderoso())
+	}
+
+	test "Espectro Malefico es Poderoso con el nombre de 'pepe'" {
+		espectroMalefico.nombre("pepe")
+		assert.notThat(espectroMalefico.esPoderoso())
+	}
+
+	test "Hechizo Basico no es Poderoso" {
+		assert.notThat(hechizoBasico.esPoderoso())
+	}
+}

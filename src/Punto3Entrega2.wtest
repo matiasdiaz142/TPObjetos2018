@@ -1,0 +1,74 @@
+import entrega2.*
+
+describe "Tests del Tercer Punto"{
+	
+	const espectroMalefico = new Logos(nombre="espectro malefico",valorMultiplcacion=1)
+	const rolando = new Personaje(hechizoPreferido = espectroMalefico)
+	const espadaDestino = new Espada()
+	const mascaraOscura = new Mascara(indiceOscuridad=1,minimoPoder=4)
+	const collarDivino = new CollarDivino(perlas = 5)
+	const armadura = new Armadura()
+	const espejoFantastico = new EspejoFantastico(luchador=rolando)
+	const hechizoBasico = new HechizoBasico()
+	const bendicion = new Bendicion(luchador=rolando)
+	const cotaDeMalla = new CotaDeMalla()
+	
+	
+	fixture {
+		rolando.hechizoPreferido(espectroMalefico)
+		rolando.agregarArtefacto(espadaDestino)
+		rolando.agregarArtefacto(collarDivino)
+		collarDivino.perlas(5)
+		rolando.agregarArtefacto(mascaraOscura)
+		rolando.agregarArtefacto(armadura)
+		rolando.agregarArtefacto(espejoFantastico)
+	}
+	//Tests Tercer Punto
+	
+	test "Rolando esta cargado con sus 5 artefactos" {
+		assert.that(rolando.estaCargado())
+	}
+	
+	test "Rolando no esta cargado sin su armadura" {
+		rolando.removerArtefacto(armadura)
+		assert.notThat(rolando.estaCargado())
+	}
+	test "Rolando tiene 20 de habilidad de lucha inicial" {
+		assert.equals(20,rolando.habilidadLucha())
+	}
+	test "La armadura de Rolando tiene 58 de habilidad para la lucha si tiene una bendicion de refuerzo" {
+		armadura.refuerzo(bendicion)
+		assert.equals(58,armadura.unidadesLucha())
+	}	
+	test "La armadura de Rolando tiene 3 de habilidad para la lucha si tiene cota de malla de refuerzo" {
+		armadura.refuerzo(cotaDeMalla)
+		assert.equals(3,armadura.unidadesLucha())
+	}
+	test "La armadura de Rolando tiene 12 de habilidad para la lucha si tiene hechizo basico de refuerzo" {
+		armadura.refuerzo(hechizoBasico)
+		assert.equals(12,armadura.unidadesLucha())
+	}
+	test "La armadura de Rolando tiene 19 de habilidad para la lucha si tiene hechizo espectro malefico de refuerzo" {
+		armadura.refuerzo(espectroMalefico)
+		assert.equals(19,armadura.unidadesLucha())
+	}
+	test "La habilidad para la lucha de Rolando es 1 solamente con el espejo" {
+		rolando.removerTodosArtefactos()
+		rolando.agregarArtefacto(espejoFantastico)
+		assert.equals(1,rolando.habilidadLucha())
+	}
+	
+	test "EL nivel de hechiceria de Rolando es 56 con un libro de hechizos que contiene al espectro malefico y hechizo basico" {
+		rolando.hechizoPreferido(libroHechizos)
+		libroHechizos.agregarHechizo(espectroMalefico)
+		libroHechizos.agregarHechizo(hechizoBasico)
+		assert.equals(56,rolando.nivelHechiceria())
+	}
+	
+	test "Rolando con Armadura extra y cota de malla de valor lucha de 6 tiene 37 de Habilidad de Lucha" {
+		const cotaDeMallaNueva = new CotaDeMalla(valorLucha=6)
+		const armaduraExtra = new Armadura(valorBase=5,refuerzo=cotaDeMallaNueva)
+		rolando.agregarArtefacto(armaduraExtra)
+		assert.equals(37,rolando.habilidadLucha())
+	}
+}

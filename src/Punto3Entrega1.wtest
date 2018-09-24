@@ -1,9 +1,9 @@
-import TPObjetos.*
+import entrega1.*
 
 describe "Tests del Tercer Punto"{
 	fixture {
 		rolando.hechizoPreferido(espectroMalefico)
-		rolando.agregarArtefacto(espadaDelDestino)
+		rolando.agregarArtefacto(espada)
 		rolando.agregarArtefacto(collarDivino)
 		collarDivino.perlas(5)
 		rolando.agregarArtefacto(mascaraOscura)
@@ -32,11 +32,13 @@ describe "Tests del Tercer Punto"{
 		assert.equals(3,armadura.unidadesLucha())
 	}
 	test "La armadura de Rolando tiene 12 de habilidad para la lucha si tiene hechizo basico de refuerzo" {
-		armadura.refuerzo(hechizoBasico)
+		hechizo.hechizo(hechizoBasico)
+		armadura.refuerzo(hechizo)
 		assert.equals(12,armadura.unidadesLucha())
 	}
 	test "La armadura de Rolando tiene 19 de habilidad para la lucha si tiene hechizo espectro malefico de refuerzo" {
-		armadura.refuerzo(espectroMalefico)
+		hechizo.hechizo(espectroMalefico)
+		armadura.refuerzo(hechizo)
 		assert.equals(19,armadura.unidadesLucha())
 	}
 	test "La habilidad para la lucha de Rolando es 1 solamente con el espejo" {
@@ -51,5 +53,4 @@ describe "Tests del Tercer Punto"{
 		libroHechizos.agregarHechizo(hechizoBasico)
 		assert.equals(56,rolando.nivelHechiceria())
 	}
-		
 }
