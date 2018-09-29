@@ -14,11 +14,7 @@ object rolando{
 	method agregarArtefacto(algunArtefacto) {artefactos.add(algunArtefacto)}
 	method removerArtefacto(algunArtefacto) {artefactos.remove(algunArtefacto)}
 	
-	method listaSinEspejo(){
-		var listaAux = artefactos
-		listaAux.remove(espejoFantastico)
-		return listaAux
-	}
+	method listaSinEspejo() = artefactos.filter({artefacto => artefacto != espejoFantastico})
 	
 	method removerTodosArtefactos(){artefactos.clear()}
 	method habilidadLucha() {
@@ -124,7 +120,7 @@ object hechizo{
 object espejoFantastico{
 	var property luchador = rolando
 	method unidadesLucha(){
-		if(luchador.artefactos() == [self])
+		if(luchador.listaSinEspejo().isEmpty())
 		{
 			return 0
 		}else{		
