@@ -10,6 +10,7 @@ class Personaje{
 	const property artefactos = []
 	const valorBaseHechiceria = 3 
 	var property baseLucha = 1
+	var property monedas = 100
 	//Punto 1
 	method nivelHechiceria() {
 		return (valorBaseHechiceria * hechizoPreferido.poder()) + fuerzaOscura.valor()

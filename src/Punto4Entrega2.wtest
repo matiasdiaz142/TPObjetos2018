@@ -1,0 +1,54 @@
+import entrega2.*
+
+describe "Tests del Tercer Punto"{
+	
+	const alacachulaCachicomula = new Logos(nombre="alacachula cachicomula",valorMultiplcacion=1) 
+	const xenia = new Personaje(hechizoPreferido=alacachulaCachicomula)
+	const hechizoBasico = new HechizoBasico()
+	const thor = new Personaje(hechizoPreferido=hechizoBasico)
+	const loki = new Personaje(hechizoPreferido=hechizoBasico,monedas=5)
+	
+	//Tests Cuarto Punto 
+	
+	test "El precio del Hechizo Logos  “alacachula cachicomula” es 22" {
+		assert.equals(22,)
+	}
+	
+	test "A Xenia le quedan 100 monedas despues de canjear su hechizo por uno basico" {
+		//Canjear hechizo
+		assert.equals(100,)
+	}
+	
+	test "A Thor le quedan 83 monedas despues de canjear su hechizo por el Logos “alacachula cachicomula”" {
+		assert.equals(83,)
+	}
+	
+	test "A Thor le quedan 90 monedas despues de canjear su hechizo por si mismo 2 veces" {
+		assert.equals(90,)
+	}
+	
+	test "Loki no puede canjear su hechizo por el de “alacachula cachicomula”" {
+		assert.notThat()
+	}
+	
+	test "A Xenia le quedan 70.5 monedas despues de comprar una espada, un collar divino, una armadura sin refuerzo y otra armadura con malla de cota" {
+		assert.equals(70.5,)
+	}
+	
+	test "A Xenia tiene 4 artefactos despues de comprar una espada, un collar divino, una armadura sin refuerzo y otra armadura con malla de cota" {
+		assert.equals(4,)
+	}
+	
+	test "A Thor le quedan 74 monedas despues de comprar una armadura con bendición como refuerzo, y una armadura reforzada con el hechizo alacachula" {
+		assert.equals(74,)
+	}
+	
+	test "Loki no puede comprar un Espejo" {
+		assert.notThat()
+	}
+	
+	test "A Xenia le quedan 69 monedas despues de canjear por un libro de hechizos que contiene el hechizo de logos de nombre “alacachula cachicomula” y el hechizo básico" {
+		assert.equals(69,)
+	}
+
+}
