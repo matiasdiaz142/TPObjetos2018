@@ -7,27 +7,34 @@ object fuerzaOscura {
 
 class Personaje{
 	var property hechizoPreferido
-	const property artefactos = []
-	const valorBaseHechiceria = 3 
+	var property artefactos = []
 	var property baseLucha = 1
-	var property monedas = 100
-	//Punto 1
+	var property monedasOro = 100
+	const valorBaseHechiceria = 3 
+	
+	constructor(_artefactos){
+          artefactos = _artefactos
+    }
+	constructor(_hechizoPreferido,_artefactos){
+          hechizoPreferido = _hechizoPreferido
+          artefactos = _artefactos
+    }
+    constructor(_hechizoPreferido,_monedasOro,_artefactos){
+          hechizoPreferido = _hechizoPreferido
+          monedasOro = _monedasOro
+          artefactos =_artefactos
+    }
 	method nivelHechiceria() {
 		return (valorBaseHechiceria * hechizoPreferido.poder()) + fuerzaOscura.valor()
 	}
 	method esPoderoso(){
 		return hechizoPreferido.esPoderoso()
 	}
-	
-	//Punto 2
+
 	method agregarArtefacto(algunArtefacto) {artefactos.add(algunArtefacto)}
 	method removerArtefacto(algunArtefacto) {artefactos.remove(algunArtefacto)}
 	
-	method listaSinArtefacto(_artefacto){
-		var listaAux = artefactos
-		listaAux.remove(_artefacto)
-		return listaAux
-	}
+	method listaSinArtefacto(otroArtefacto) = artefactos.filter({artefacto => artefacto != otroArtefacto})
 	
 	method removerTodosArtefactos(){artefactos.clear()}
 	method habilidadLucha() {
@@ -36,110 +43,195 @@ class Personaje{
 	method mayorHabilidadLuchaQueDeHechizeria() {
 		return self.nivelHechiceria() > self.habilidadLucha()
 	}
-	//Punto 3
+
 	method estaCargado() {
 		return artefactos.size() >= 5
+	}
+	
+	//Segunda Entrega
+	method pagoCanje() {
+		return (hechizoPreferido.precio() / 2 + self.monedasOro())
+	}
+	method puedoCanjear(nuevoHechizo){
+		return self.pagoCanje() > nuevoHechizo.precio()
+	}
+	method canjear(nuevoHechizo){
+		if(self.puedoCanjear(nuevoHechizo))
+		{
+			if(hechizoPreferido.precio() / 2 > nuevoHechizo.precio())
+			{
+				//Gratis
+				hechizoPreferido = nuevoHechizo
+			}else{
+				monedasOro = self.pagoCanje() - nuevoHechizo.precio()  
+				hechizoPreferido = nuevoHechizo
+			}
+		}else{
+			throw new Exception("No puede Canjear el hechizo") 
+		}		
+	}
+	method comprar(artefacto){
+		if(self.monedasOro() >= artefacto.precio()){
+			self.agregarArtefacto(artefacto)
+			monedasOro = monedasOro - artefacto.precio()
+		}else{
+			throw new Exception("No puede Comprar el artefacto")
+		}
 	}
 }
 
 //Hechizos
-//espectroMalefico
-class Logos inherits Hechizo{
+class Logos{
 	var property nombre
-	var property valorMultiplcacion
-	override method esPoderoso() {
+	var property multiplicador
+	method esPoderoso() {
 		return self.poder() > 15
 	}
-	override method poder() {
-		return nombre.length()*valorMultiplcacion
+	method poder() {
+		return nombre.length() * self.multiplicador()
 	}
-}
-
-class HechizoBasico inherits Hechizo{
-	var poder = 10
-	override method esPoderoso() {
-		return false
-	}
-	override method poder() = poder
-	method poder(_poder) {poder=_poder}
-}
-
-class Hechizo{
-	method unidadesLucha() {
+	method precio(){
 		return self.poder()
 	}
-	method poder()
-	method esPoderoso()
 }
 
-object libroHechizos{
+object hechizoBasico{
+	var property poder = 10
+	
+	method esPoderoso() {
+		return false
+	}
+	
+	method precio(){
+		return 10
+	}
+}
+
+class LibroHechizos{
 	var property hechizos = []
 	method agregarHechizo(_hechizo) {hechizos.add(_hechizo)}
 	method removerHechizo(_hechizo) {hechizos.remove(_hechizo)}
 	method poder() {
-		return hechizos.filter({hechizo => hechizo.esPoderoso()}).map({hechizo => hechizo.poder()}).sum()
+		return hechizos.filter({hechizo => hechizo.esPoderoso()}).sum({hechizo => hechizo.poder()})
+	}
+	method precio(){
+		return (10 * hechizos.size()) + self.poder()  
 	}
 }
-//Que libroHechizos se contenga asi mismo romperia al libroHechizo no entender el mensaje esPoderoso
-//y ademas que entraria en un caso recursivo al preguntar el poder del libroHechizos
 
 //Artefactos
-class Espada{
-	method unidadesLucha() {
+
+class Artefacto { 
+	method unidadesLucha()
+}
+class Arma inherits Artefacto{
+	override method unidadesLucha() {
 		return 3
 	}
+	method precio(){
+		return 5 * self.unidadesLucha()
+	}
 }
-class CollarDivino{
+class CollarDivino inherits Artefacto{
 	var property perlas
-	method unidadesLucha() {
+	override method unidadesLucha() {
 		return perlas
 	} 
+	method precio(){
+		return 2 * self.perlas()
+	}
 }
-class Mascara{
-	var indiceOscuridad
-	var minimoPoder
-	method unidadesLucha() {
-		return ((fuerzaOscura.valor()/2)*indiceOscuridad).max(minimoPoder)
+class Mascara inherits Artefacto{
+	var property indiceOscuridad
+	var property minimo = 4
+	constructor(_indiceOscuridad, _minimo) {
+          indiceOscuridad = _indiceOscuridad
+          minimo = _minimo
+     }
+     constructor(_indiceOscuridad) {
+          indiceOscuridad = _indiceOscuridad
+     }
+	override method unidadesLucha() {
+		return ((fuerzaOscura.valor()/2)*indiceOscuridad).max(minimo)
 	}
 }
 
-class Armadura{
-	var property refuerzo
-	var property valorBase = 2
-	method unidadesLucha(){
-		if(refuerzo != null)
-		{
-			return valorBase + refuerzo.unidadesLucha()
-		}
-		else
-		{
-			return valorBase 
-		}
-	} 
-}
-
-class CotaDeMalla{
-	var property valorLucha = 1
-	method unidadesLucha() {
-		return valorLucha
-	}	
-}
-
-class Bendicion{
-	var property luchador 
-	method unidadesLucha(){
-		return luchador.nivelHechiceria()
-	}
-}
-
-class EspejoFantastico{
-	var property luchador
-	method unidadesLucha(){
-		if(luchador.artefactos() == [self])
+class Espejo inherits Artefacto{
+	var property personaje
+	override method unidadesLucha(){
+		if(personaje.listaSinArtefacto(self).isEmpty())
 		{
 			return 0
 		}else{		
-			return luchador.listaSinArtefacto(self).max({artefacto => artefacto.unidadesLucha()}).unidadesLucha()
+			return personaje.listaSinArtefacto(self).max({artefacto => artefacto.unidadesLucha()}).unidadesLucha()
 		}
+	}
+	method precio(){
+		return 90
+	}
+}
+
+class Armadura inherits Artefacto{
+	var property refuerzo
+	const property baseArmadura
+	constructor(_refuerzo, _baseArmadura) {
+          refuerzo = _refuerzo
+          baseArmadura = _baseArmadura
+    }
+    constructor(_baseArmadura) {
+          baseArmadura = _baseArmadura
+    }
+
+	override method unidadesLucha()= baseArmadura + refuerzo.unidadesLucha()
+
+	method precio() = refuerzo.precioCon(self)	
+
+}
+class Refuerzo{
+	method unidadesLucha()
+	method precioCon(unaArmadura) 
+}
+class CotaDeMalla inherits Refuerzo{
+	var property unidadesLucha
+	constructor(_unidadesLucha) {
+          unidadesLucha = _unidadesLucha
+    }
+	override method unidadesLucha() {
+		return unidadesLucha
+	}
+	override method precioCon(armadura){
+		return self.unidadesLucha() / 2 
+	}
+}
+
+class Bendicion inherits Refuerzo{
+	var property luchador
+	constructor(_luchador) {
+          luchador = _luchador
+    }
+	override method unidadesLucha(){
+		return luchador.nivelHechiceria()
+	}
+	override method precioCon(armadura){
+		return  armadura.baseArmadura()
+	}
+}
+
+class Hechizo inherits Refuerzo{
+	var property hechizo
+	override method unidadesLucha() {
+		return hechizo.poder()
+	}
+	override method precioCon(unaArmadura) = hechizo.precio() + unaArmadura.baseArmadura()
+}
+
+object ninguno inherits Refuerzo{
+	
+	override method unidadesLucha(){
+		return 0
+	}
+	
+	override method precioCon(armadura){
+		return 2
 	}
 }

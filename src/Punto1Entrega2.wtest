@@ -1,16 +1,14 @@
 import entrega2.*
 
-describe "Tests del Primer Punto - Segunda Entrega"{
+describe "Tests del Primer Punto"{
+	const espectroMalefico = new Logos(nombre="Espectro Malefico",multiplicador=1)
+	const rolando = new Personaje(hechizoPreferido=espectroMalefico)
 	
-	const espectroMalefico = new Logos(nombre="espectro malefico",valorMultiplcacion=1)
-	const rolando = new Personaje(hechizoPreferido = espectroMalefico)
-	const hechizoBasico = new HechizoBasico()
 	fixture {
 		rolando.hechizoPreferido(espectroMalefico)
-	}	
+	}
+	
 	test "Nivel de hechicería de Rolando es 56 con Espectro Malefico de Hechizo Preferido" {
-		
-		
 		assert.equals(56,rolando.nivelHechiceria())
 	}
 	
