@@ -49,8 +49,9 @@ class Personaje{
 	}
 	
 	//Segunda Entrega
+	method meSaleGratis(nuevoHechizo) = hechizoPreferido.precioCanje() > nuevoHechizo.precio() 
 	method pagoCanje() {
-		return (hechizoPreferido.precio() / 2 + self.monedasOro())
+		return (hechizoPreferido.precioCanje() + self.monedasOro())
 	}
 	method puedoCanjear(nuevoHechizo){
 		return self.pagoCanje() > nuevoHechizo.precio()
@@ -58,12 +59,12 @@ class Personaje{
 	method canjear(nuevoHechizo){
 		if(self.puedoCanjear(nuevoHechizo))
 		{
-			if(hechizoPreferido.precio() / 2 > nuevoHechizo.precio())
+			if(self.meSaleGratis(nuevoHechizo))
 			{
 				//Gratis
 				hechizoPreferido = nuevoHechizo
 			}else{
-				monedasOro = self.pagoCanje() - nuevoHechizo.precio()  
+				monedasOro = monedasOro + hechizoPreferido.precioCanje() - nuevoHechizo.precio()  
 				hechizoPreferido = nuevoHechizo
 			}
 		}else{
@@ -93,6 +94,7 @@ class Logos{
 	method precio(){
 		return self.poder()
 	}
+	method precioCanje() = self.precio() /2
 }
 
 object hechizoBasico{
@@ -105,6 +107,7 @@ object hechizoBasico{
 	method precio(){
 		return 10
 	}
+	method precioCanje() = self.precio() /2
 }
 
 class LibroHechizos{
