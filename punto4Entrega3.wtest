@@ -3,7 +3,7 @@ import TPObjetos.*
 describe "Tests del Cuarto Punto"{
 	const fechaHoy = new Date()
 	const pastoriza = new ComercianteIndependiente(9)
-	const prieto = new ComercianteRegistrado()
+	var prieto = new ComercianteRegistrado()
 	const fermepin = new ComercianteConImpuestoAGanancias(minimoImponible=5)
 	const ursula = new Personaje(monedasOro=100,cargaMaxima=200,hechizoPreferido=null,artefactos=[])
 	const mascaraOscura = new Mascara(indiceOscuridad=1,peso=3,minimo=0,fechaDeCompra=fechaHoy)
@@ -38,7 +38,7 @@ describe "Tests del Cuarto Punto"{
 	}
 	
 	test "A Ursula le quedan 88,25 monedas despues de comprar la mascara oscura a Prieto Recategorizado" {
-		prieto.recategorizar()
+		prieto = prieto.recategorizar()
 		ursula.comprarAlgoA(mascaraOscura,prieto)
 		assert.equals(88.25,ursula.monedasOro())
 	}

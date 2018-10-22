@@ -271,31 +271,29 @@ object ninguno inherits Refuerzo{
 	}
 }
 class Comerciante{
-	var tipo
-	method vender(artefacto) = tipo.vender(artefacto)
+	method vender(artefacto) = artefacto.precio() + self.impuesto()*artefacto.precio()
+	method impuesto()
+	method recategorizar()
 }
-class ComercianteIndependiente{
+class ComercianteIndependiente inherits Comerciante{
 	const comisionInicial
 	var comision
 	constructor(_comision){
 		comisionInicial =_comision
 		comision=_comision
 	}
-	method vender(artefacto) = artefacto.precio() + self.impuesto()*artefacto.precio()
-	method impuesto() = (21.min(comision))/100
-	method recategorizar(){comision*=2}
+	override method impuesto() = (21.min(comision))/100
+	override method recategorizar(){comision*=2}
 }
-class ComercianteRegistrado{
+class ComercianteRegistrado inherits Comerciante{
 	const iva = 21
-	method vender(artefacto) = artefacto.precio() + self.impuesto()*artefacto.precio()
-	method impuesto() = iva/100
-	method recategorizar(){}
-	//Nose como pasarlo a ComercianteConImpuestoAGanancias
+	override method impuesto() = iva/100
+	override method recategorizar() = new ComercianteConImpuestoAGanancias(minimoImponible=5)
 }
-class ComercianteConImpuestoAGanancias{
+class ComercianteConImpuestoAGanancias inherits Comerciante{
 	const impuestoGanancias = 35
 	var minimoImponible
-	method vender(artefacto) {
+	override method vender(artefacto) {
 		if(artefacto.precio() < minimoImponible)
 		{
 			return artefacto.precio()
@@ -305,6 +303,6 @@ class ComercianteConImpuestoAGanancias{
 			return artefacto.precio() + (artefacto.precio()-minimoImponible)*self.impuesto()
 		}
 	}
-	method impuesto() = impuestoGanancias/100
-	method recategorizar(){}
+	override method impuesto() = impuestoGanancias/100
+	override method recategorizar(){}
 }
