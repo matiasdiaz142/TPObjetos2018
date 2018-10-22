@@ -85,6 +85,14 @@ class Personaje{
 	}
 	//Tercera Entrega
 	method pesoTotalCarga() = artefactos.sum({artefacto => artefacto.pesoTotal()})
+	method comprarAlgoA(artefacto,comerciante){
+		if(self.monedasOro() >= comerciante.vender(artefacto)){
+			self.agregarArtefacto(artefacto)
+			monedasOro = monedasOro - comerciante.vender(artefacto)
+		}else{
+			throw new Exception("No puede Comprar el artefacto")
+		}
+	}
 }
 class PersonajeNoControlado inherits Personaje{
 	var property nivel
@@ -105,6 +113,8 @@ class Hechizo{
 	method poder()
 	method esPoderoso() = self.poder() > 15
 	method pesoTotal() = 0
+	method precio() = self.poder()
+
 }
 class HechizoComercial inherits Hechizo{
 	var nombre = "el hechizo comercial"
@@ -118,9 +128,7 @@ class Logos inherits Hechizo{
 	override method poder() {
 		return nombre.length() * self.multiplicador()
 	}
-	method precio(){
-		return self.poder()
-	}
+
 	method precioCanje() = self.precio() /2
 }
 
@@ -128,9 +136,6 @@ object hechizoBasico inherits Hechizo{
 	var property poder = 10
 	override method poder() = poder
 	//Si no ponemos el getter de poder, wollok no reconoce que existe
-	method precio(){
-		return 10
-	}
 	method precioCanje() = self.precio() /2
 }
 
@@ -152,12 +157,9 @@ class Artefacto {
 	var peso
 	var fechaDeCompra
 	var fechaHoy = new Date()
-	constructor(dias,mes,anio){
-		fechaDeCompra = new Date(dias,mes,anio)
-	}
 	method unidadesLucha()
 	method pesoTotal() = peso - self.factorDeCorreccion() 
-	method factorDeCorreccion() = 1.min(self.diasDesdeCompra()/1000)
+	method factorDeCorreccion() = 1.min(self.diasDesdeCompra()/100)
 	method diasDesdeCompra() = fechaHoy - fechaDeCompra
 }
 class Arma inherits Artefacto{
@@ -165,14 +167,12 @@ class Arma inherits Artefacto{
 		return 3
 	}
 	method precio(){
-		return 5 * self.unidadesLucha()
+		return 5 * peso
 	}
 }
 class CollarDivino inherits Artefacto{
 	var property perlas
-	constructor(_perlas,dias,mes,anio) = super(dias,mes,anio){
-		perlas = _perlas
-	}
+
 	override method unidadesLucha() {
 		return perlas
 	} 
@@ -184,13 +184,7 @@ class CollarDivino inherits Artefacto{
 class Mascara inherits Artefacto{
 	var property indiceOscuridad
 	var property minimo = 4
-	constructor(_indiceOscuridad, _minimo,dias,mes,anio) = super(dias,mes,anio){
-          indiceOscuridad = _indiceOscuridad
-          minimo = _minimo
-     }
-     constructor(_indiceOscuridad,dias,mes,anio) = super(dias,mes,anio){
-          indiceOscuridad = _indiceOscuridad
-     }
+
 	override method unidadesLucha() {
 		return ((fuerzaOscura.valor()/2)*indiceOscuridad).max(minimo)
 	}
@@ -200,6 +194,7 @@ class Mascara inherits Artefacto{
 		}
 		return super()
 	}
+	method precio() = 10*indiceOscuridad
 }
 
 class Espejo inherits Artefacto{
@@ -220,15 +215,7 @@ class Espejo inherits Artefacto{
 class Armadura inherits Artefacto{
 	var property refuerzo
 	const property baseArmadura = 2
-	constructor(dias,mes,anio) = super(dias,mes,anio){refuerzo=ninguno}
-	constructor(_refuerzo, _baseArmadura,dias,mes,anio) = super(dias,mes,anio){
-          refuerzo = _refuerzo
-          baseArmadura = _baseArmadura
-    }
-    constructor(_baseArmadura,dias,mes,anio) = super(dias,mes,anio){
-          baseArmadura = _baseArmadura
-    }
-
+	
 	override method unidadesLucha()= baseArmadura + refuerzo.unidadesLucha()
 
 	method precio() = refuerzo.precioCon(self)
@@ -282,4 +269,42 @@ object ninguno inherits Refuerzo{
 	override method precioCon(armadura){
 		return 2
 	}
+}
+class Comerciante{
+	var tipo
+	method vender(artefacto) = tipo.vender(artefacto)
+}
+class ComercianteIndependiente{
+	const comisionInicial
+	var comision
+	constructor(_comision){
+		comisionInicial =_comision
+		comision=_comision
+	}
+	method vender(artefacto) = artefacto.precio() + self.impuesto()*artefacto.precio()
+	method impuesto() = (21.min(comision))/100
+	method recategorizar(){comision*=2}
+}
+class ComercianteRegistrado{
+	const iva = 21
+	method vender(artefacto) = artefacto.precio() + self.impuesto()*artefacto.precio()
+	method impuesto() = iva/100
+	method recategorizar(){}
+	//Nose como pasarlo a ComercianteConImpuestoAGanancias
+}
+class ComercianteConImpuestoAGanancias{
+	const impuestoGanancias = 35
+	var minimoImponible
+	method vender(artefacto) {
+		if(artefacto.precio() < minimoImponible)
+		{
+			return artefacto.precio()
+		}
+		else
+		{
+			return artefacto.precio() + (artefacto.precio()-minimoImponible)*self.impuesto()
+		}
+	}
+	method impuesto() = impuestoGanancias/100
+	method recategorizar(){}
 }
