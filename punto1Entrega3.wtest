@@ -1,0 +1,20 @@
+import TPObjetos.*
+
+describe "Tests del Primer Punto"{
+	
+	const espectroMalefico = new Logos(nombre="Espectro Malefico",multiplicador=1)
+	const hechizoComercial = new HechizoComercial()
+	const furibunda = new Personaje(hechizoPreferido=hechizoComercial,cargaMaxima=200)
+	
+	test "Nivel de hechicería de Furibunda es 29 con Hechizo Comercial de Hechizo Preferido" {
+		assert.equals(29,furibunda.nivelHechiceria())
+	}
+	
+	test "Hechizo Comercial no es Poderoso" {
+		assert.notThat(hechizoComercial.esPoderoso())
+	}
+	
+	test "Espectro Malefico es Poderoso" {
+		assert.that(espectroMalefico.esPoderoso())
+	}
+}
