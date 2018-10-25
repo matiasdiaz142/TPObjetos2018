@@ -1,0 +1,20 @@
+import TPObjetos.*
+
+describe "Tests del Tercer Punto"{
+	const fechaHoy = new Date()
+	const navi = new PersonajeNoControlado(nivel=facil,hechizoPreferido=null,cargaMaxima=200)
+	const mascaraClara = new Mascara(indiceOscuridad=0,fechaDeCompra=fechaHoy,peso=2)
+	const ashleyGraham = new PersonajeNoControlado(nivel=moderado,baseLucha=5,artefactos=[mascaraClara],hechizoPreferido=null,cargaMaxima=200)
+
+	test "Navi tiene 1 de habilidad de lucha inicial" {
+		assert.equals(1,navi.habilidadLucha())
+	}
+	test "Ashley Graham tiene 18 de habilidad de lucha inicial" {
+		assert.equals(18,ashleyGraham.habilidadLucha())
+	}
+	test "Ashley Graham tiene 36 de habilidad de lucha con dificultad dificil" {
+		ashleyGraham.nivel(dificil)
+		assert.equals(36,ashleyGraham.habilidadLucha())
+	}
+	
+}

@@ -1,0 +1,73 @@
+import TPObjetos.*
+
+describe "Tests del Segundo Punto"{
+	const fechaEspadaVieja = new Date(7,5,2006)
+	const fechaHoy = new Date()
+	const fechaHace50Dias = new Date().minusDays(50)
+	const espadaVieja = new Arma(fechaDeCompra=fechaEspadaVieja,peso=7)
+	const espadaNueva = new Arma(fechaDeCompra=fechaHoy,peso=4)
+	const espadaComun = new Arma(fechaDeCompra=fechaHace50Dias,peso=5)
+	const collarDivino = new CollarDivino(perlas = 5,fechaDeCompra=fechaHoy,peso=0)
+	const mascaraOscura = new Mascara(indiceOscuridad=1,peso=3,minimo=0,fechaDeCompra=fechaHoy)
+	const mascaraClara = new Mascara(indiceOscuridad=0,peso=2,minimo=0,fechaDeCompra=fechaHoy)
+	const cotaDeMalla = new CotaDeMalla(unidadesLucha=5)
+	const armdaduraConCotaDeMalla = new Armadura(refuerzo=cotaDeMalla,fechaDeCompra=fechaHoy,peso=10)
+	const hechizoComercial = new HechizoComercial()
+	const hechizoComerciaRefuerzo = new HechizoRefuerzo(hechizo=hechizoComercial)
+	const armaduraPar = new Armadura(refuerzo=hechizoComerciaRefuerzo,fechaDeCompra=fechaHoy,peso=12)
+	const espectroMalefico = new Logos(nombre="Espectro Malefico",multiplicador=1)
+	const espectroMaleficoRefuerzo = new HechizoRefuerzo(hechizo=espectroMalefico)
+	const armaduraImpar = new Armadura(refuerzo=espectroMaleficoRefuerzo,fechaDeCompra=fechaHoy,peso=12)
+	const armaduraSinRefuerzo = new Armadura(refuerzo=ninguno,fechaDeCompra=fechaHoy,peso=12)
+	const merlin = new Personaje(monedasOro=100,cargaMaxima=10,hechizoPreferido=null,artefactos=[])
+	const ursula = new Personaje(monedasOro=100,cargaMaxima=200,hechizoPreferido=null,artefactos=[mascaraOscura,armdaduraConCotaDeMalla])
+	const mockHnos = new ComercianteIndependiente(0)
+	
+	test "El peso de la espada vieja es 6 kg" {
+		assert.equals(6,espadaVieja.pesoTotal())
+	}
+	test "El peso de la espada nueva es 4 kg" {
+		assert.equals(4,espadaNueva.pesoTotal())
+	}
+	test "El peso de la espada comun es 4.5 kg" {
+		assert.equals(4.5,espadaComun.pesoTotal())
+	}
+	test "El peso del collar divino es 2.5 kg" {
+		assert.equals(2.5,collarDivino.pesoTotal())
+	}
+	test "El peso de la mascara oscura es 3 kg" {
+		assert.equals(3,mascaraOscura.pesoTotal())
+	}
+	test "El peso de la mascara oscura es 5 kg con un eclipse" {
+		fuerzaOscura.eclipse()
+		assert.equals(5,mascaraOscura.pesoTotal())
+	}
+	test "El peso de la mascara clara es 2 kg" {
+		assert.equals(2,mascaraClara.pesoTotal()
+		)
+	}
+	test "El peso de la Armadura con Cota de Malla es 11 kg" {
+		assert.equals(11,armdaduraConCotaDeMalla.pesoTotal())
+	}
+	test "El peso de la Armadura con Hechizo Par es 14 kg" {
+		assert.equals(14,armaduraPar.pesoTotal())
+	}
+	test "El peso de la Armadura con Hechizo Impar es 13 kg" {
+		assert.equals(13,armaduraImpar.pesoTotal())
+	}
+	test "El peso de la Armadura sin refuerzo es 12 kg" {
+		assert.equals(12,armaduraSinRefuerzo.pesoTotal())
+	}
+	test "El peso de carga de Merlin es 5kg comprando la mascara clara y oscura a Mock Hnos" {
+		merlin.comprarAComerciante(mascaraClara,mockHnos)
+		merlin.comprarAComerciante(mascaraOscura,mockHnos)
+		assert.equals(5,merlin.pesoTotalCarga())
+	}
+	test "Merlin no puede comprar la Armadura con hechizo par a Mock Hnos por que supera el peso maximo" {
+		assert.throwsExceptionWithMessage("No se puede agregar el artefacto",{merlin.comprarAComerciante(armaduraPar,mockHnos)})
+	}
+	test "El peso total de Ursula despues de desprenderse de la Armadura con Cota de Malla es 3 kg" {
+		ursula.removerArtefacto(armdaduraConCotaDeMalla)
+		assert.equals(3,ursula.pesoTotalCarga())
+	}
+}
