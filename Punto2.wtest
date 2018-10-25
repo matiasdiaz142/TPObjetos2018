@@ -6,7 +6,7 @@ describe "Tests del Segundo Punto"{
 	const espada = new Arma(fechaDeCompra=fechaHoy,peso=pesoInicial)
 	const mascaraOscura = new Mascara(indiceOscuridad=1,fechaDeCompra=fechaHoy,peso=pesoInicial)
 	const collarDivino = new CollarDivino(perlas=5,fechaDeCompra=fechaHoy,peso=pesoInicial)
-	const rolando = new Personaje([espada,mascaraOscura,collarDivino],0)
+	const rolando = new Personaje([espada,mascaraOscura,collarDivino],200)
 
 	test "Eliminando todos los artefactos, la habilidad de Rolando es 1" {
 		rolando.removerArtefacto(espada)

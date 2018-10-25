@@ -43,12 +43,12 @@ describe "Tests del Cuarto Punto"{
 		
 		assert.throwsExceptionWithMessage("No puede Canjear el hechizo",{loki.canjear(alacachulaCachicomula)})
 	}
-	test "A Xenia le quedan 70.5 monedas despues de comprar una espada, un collar divino, una armadura sin refuerzo y otra armadura con malla de cota" {		
+	test "A Xenia le quedan 85.5 monedas despues de comprar una espada, un collar divino, una armadura sin refuerzo y otra armadura con malla de cota" {		
 		xenia.comprar(espada)
 		xenia.comprar(collarDivino)
 		xenia.comprar(armaduraSinRefuerzo)
 		xenia.comprar(armaduraConRefuerzo)
-		assert.equals(70.5,xenia.monedasOro())
+		assert.equals(85.5,xenia.monedasOro())
 	}
 	
 	test "Xenia tiene 4 artefactos despues de comprar una espada, un collar divino, una armadura sin refuerzo y otra armadura con malla de cota" {

@@ -34,15 +34,23 @@ class Personaje{
 	method esPoderoso(){
 		return hechizoPreferido.esPoderoso()
 	}
-
-	method agregarArtefacto(algunArtefacto) {artefactos.add(algunArtefacto)}
+	method agregarArtefacto(algunArtefacto) {
+		if(algunArtefacto.pesoTotal() + self.pesoTotalCarga() < cargaMaxima)
+		{
+			artefactos.add(algunArtefacto)
+		}
+		else
+		{
+			throw new Exception("No se puede agregar el artefacto")
+		}
+	}
 	method removerArtefacto(algunArtefacto) {artefactos.remove(algunArtefacto)}
 	
 	method listaSinArtefacto(otroArtefacto) = artefactos.filter({artefacto => artefacto != otroArtefacto})
 	
 	method removerTodosArtefactos(){artefactos.clear()}
 	method habilidadLucha() {
-		return (baseLucha + artefactos.map({arma => arma.unidadesLucha()}).sum())
+		return (baseLucha + artefactos.sum({arma => arma.unidadesLucha()}))
 	}
 	method mayorHabilidadLuchaQueDeHechizeria() {
 		return self.nivelHechiceria() > self.habilidadLucha()
@@ -75,6 +83,7 @@ class Personaje{
 			throw new Exception("No puede Canjear el hechizo") 
 		}		
 	}
+	//Dejamos este metodo comprar para que funcionen los test de la entrega 2
 	method comprar(artefacto){
 		if(self.monedasOro() >= artefacto.precio()){
 			self.agregarArtefacto(artefacto)
@@ -84,11 +93,14 @@ class Personaje{
 		}
 	}
 	//Tercera Entrega
-	method pesoTotalCarga() = artefactos.sum({artefacto => artefacto.pesoTotal()})
-	method comprarAlgoA(artefacto,comerciante){
-		if(self.monedasOro() >= comerciante.vender(artefacto)){
+	method pesoTotalCarga(){
+		return artefactos.sum({artefacto => artefacto.pesoTotal()})
+	}
+
+	method comprarAComerciante(artefacto,comerciante){
+		if(self.monedasOro() >= comerciante.precioConImpuesto(artefacto)){
 			self.agregarArtefacto(artefacto)
-			monedasOro = monedasOro - comerciante.vender(artefacto)
+			monedasOro = monedasOro - comerciante.precioConImpuesto(artefacto)
 		}else{
 			throw new Exception("No puede Comprar el artefacto")
 		}
@@ -156,7 +168,7 @@ class LibroHechizos{
 class Artefacto { 
 	var peso
 	var fechaDeCompra
-	var fechaHoy = new Date()
+	const fechaHoy = new Date()
 	method unidadesLucha()
 	method pesoTotal() = peso - self.factorDeCorreccion() 
 	method factorDeCorreccion() = 1.min(self.diasDesdeCompra()/100)
@@ -194,7 +206,7 @@ class Mascara inherits Artefacto{
 		}
 		return super()
 	}
-	method precio() = 10*indiceOscuridad
+	method precio() = 10 * indiceOscuridad
 }
 
 class Espejo inherits Artefacto{
@@ -270,39 +282,57 @@ object ninguno inherits Refuerzo{
 		return 2
 	}
 }
+//Tercer Entrega
+
 class Comerciante{
-	method vender(artefacto) = artefacto.precio() + self.impuesto()*artefacto.precio()
-	method impuesto()
+	method precioConImpuesto(artefacto)
 	method recategorizar()
+	method precioBaseArtefacto(artefacto) = artefacto.precio()
 }
 class ComercianteIndependiente inherits Comerciante{
-	const comisionInicial
-	var comision
-	constructor(_comision){
-		comisionInicial =_comision
-		comision=_comision
+	const comision
+	constructor(_comision) {
+          comision = _comision
+    }
+	override method precioConImpuesto(artefacto){
+		return self.precioBaseArtefacto(artefacto)*(1 + comision/100)
 	}
-	override method impuesto() = (21.min(comision))/100
-	override method recategorizar(){comision*=2}
+	override method recategorizar(){
+		if ((comision * 2) > 21 ){
+			return new ComercianteRegistrado() 
+		}
+		else{
+			return new ComercianteIndependiente(comision*2)
+		}
+	}
 }
+
 class ComercianteRegistrado inherits Comerciante{
 	const iva = 21
-	override method impuesto() = iva/100
-	override method recategorizar() = new ComercianteConImpuestoAGanancias(minimoImponible=5)
-}
-class ComercianteConImpuestoAGanancias inherits Comerciante{
-	const impuestoGanancias = 35
-	var minimoImponible
-	override method vender(artefacto) {
-		if(artefacto.precio() < minimoImponible)
-		{
-			return artefacto.precio()
-		}
-		else
-		{
-			return artefacto.precio() + (artefacto.precio()-minimoImponible)*self.impuesto()
-		}
+	override method precioConImpuesto(artefacto){
+		return self.precioBaseArtefacto(artefacto)*(1 + iva/100)
 	}
-	override method impuesto() = impuestoGanancias/100
-	override method recategorizar(){}
+	override method recategorizar(){
+		return new ComercianteImpuestoALasGanancias(5)
+	}
+}
+
+class ComercianteImpuestoALasGanancias inherits Comerciante{
+	const minimoNoImponible
+	constructor(_minimoNoImponible) {
+          minimoNoImponible = _minimoNoImponible
+    }	
+	override method precioConImpuesto(artefacto){
+		if(artefacto.precio() < minimoNoImponible){
+			return self.precioBaseArtefacto(artefacto)
+		}else{
+			return self.precioBaseArtefacto(artefacto) + self.diferenciaImportes(artefacto)*(35/100)
+		}	
+	}
+	method diferenciaImportes(artefacto){
+		return (self.precioBaseArtefacto(artefacto)-minimoNoImponible)
+	}
+	override method recategorizar(){
+		return new ComercianteImpuestoALasGanancias(minimoNoImponible)
+	}
 }
