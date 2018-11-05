@@ -18,7 +18,10 @@ describe "Tests del Cuarto Punto"{
 	const armaduraConHechizo = new Armadura(baseArmadura=2,refuerzo = hechizo,fechaDeCompra=fechaHoy,peso=pesoInicial)
 	const libroDeHechizos = new LibroHechizos(hechizos = [alacachulaCachicomula,hechizoBasico])
 	const espejoFantastico = new Espejo(fechaDeCompra=fechaHoy,peso=pesoInicial,personaje=null)
-	
+	const mockHnos = new Comerciante(tipoImpositivo=comercianteIndependiente)
+	fixture{
+		comercianteIndependiente.comision(0)
+	}	
 	//Tests Cuarto Punto
 	
 	test "El precio del Hechizo Logos  “alacachula cachicomula” es 22" {
@@ -43,29 +46,29 @@ describe "Tests del Cuarto Punto"{
 		
 		assert.throwsExceptionWithMessage("No puede Canjear el hechizo",{loki.canjear(alacachulaCachicomula)})
 	}
-	test "A Xenia le quedan 85.5 monedas despues de comprar una espada, un collar divino, una armadura sin refuerzo y otra armadura con malla de cota" {		
-		xenia.comprar(espada)
-		xenia.comprar(collarDivino)
-		xenia.comprar(armaduraSinRefuerzo)
-		xenia.comprar(armaduraConRefuerzo)
+	test "A Xenia le quedan 85.5 monedas despues de comprar una espada, un collar divino, una armadura sin refuerzo y otra armadura con malla de cota a Mock Hnos" {		
+		xenia.comprarAComerciante(espada,mockHnos)
+		xenia.comprarAComerciante(collarDivino,mockHnos)
+		xenia.comprarAComerciante(armaduraSinRefuerzo,mockHnos)
+		xenia.comprarAComerciante(armaduraConRefuerzo,mockHnos)
 		assert.equals(85.5,xenia.monedasOro())
 	}
 	
-	test "Xenia tiene 4 artefactos despues de comprar una espada, un collar divino, una armadura sin refuerzo y otra armadura con malla de cota" {
-		xenia.comprar(espada)
-		xenia.comprar(collarDivino)
-		xenia.comprar(armaduraSinRefuerzo)
-		xenia.comprar(armaduraConRefuerzo)
+	test "Xenia tiene 4 artefactos despues de comprar una espada, un collar divino, una armadura sin refuerzo y otra armadura con malla de cota a Mock Hnos" {
+		xenia.comprarAComerciante(espada,mockHnos)
+		xenia.comprarAComerciante(collarDivino,mockHnos)
+		xenia.comprarAComerciante(armaduraSinRefuerzo,mockHnos)
+		xenia.comprarAComerciante(armaduraConRefuerzo,mockHnos)
 		assert.equals(4,xenia.artefactos().size())
 	}
 	
-	test "A Thor le quedan 74 monedas despues de comprar una armadura con bendición como refuerzo, y una armadura reforzada con el hechizo alacachula" {
-		thor.comprar(armaduraConBendicion)
-		thor.comprar(armaduraConHechizo)	
+	test "A Thor le quedan 74 monedas despues de comprar una armadura con bendición como refuerzo, y una armadura reforzada con el hechizo alacachula a Mock Hnos" {
+		thor.comprarAComerciante(armaduraConBendicion,mockHnos)
+		thor.comprarAComerciante(armaduraConHechizo,mockHnos)	
 		assert.equals(74,thor.monedasOro())
 	}
-	test "Loki no puede comprar un Espejo" {
-		assert.throwsExceptionWithMessage("No puede Comprar el artefacto",{loki.comprar(espejoFantastico)})
+	test "Loki no puede comprar un Espejo a Mock Hnos" {
+		assert.throwsExceptionWithMessage("No puede Comprar el artefacto",{loki.comprarAComerciante(espejoFantastico,mockHnos)})
 	}
 	
 	test "A Xenia le quedan 59 monedas despues de canjear por un libro de hechizos que contiene el hechizo de logos de nombre “alacachula cachicomula” y el hechizo básico" {
