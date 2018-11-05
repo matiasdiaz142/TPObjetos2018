@@ -4,14 +4,17 @@ describe "Tests del Cuarto Punto"{
 
 	const fechaHoy = new Date()
 	const cotaDeMalla = new CotaDeMalla(unidadesLucha=5)
-	const armdaduraConCotaDeMalla = new Armadura(refuerzo=cotaDeMalla,fechaDeCompra=fechaHoy,peso=10)
+	const armdaduraConCotaDeMalla = new Armadura(baseArmadura=2,refuerzo=cotaDeMalla,fechaDeCompra=fechaHoy,peso=10)
 	const mascaraOscura = new Mascara(indiceOscuridad=1,peso=3,minimo=0,fechaDeCompra=fechaHoy)
 	
-	var pastoriza = new ComercianteIndependiente(9)
-	var prieto = new ComercianteRegistrado()
-	var fermepin = new ComercianteImpuestoALasGanancias(5)
+	var pastoriza = new Comerciante(tipoImpositivo=comercianteIndependiente)
+	var prieto = new Comerciante(tipoImpositivo=comercianteRegistrado)
+	var fermepin = new Comerciante(tipoImpositivo=comercianteImpuestoALasGanancias)
 	const ursula = new Personaje(monedasOro=100,cargaMaxima=200,hechizoPreferido=null,artefactos=[mascaraOscura,armdaduraConCotaDeMalla])
-
+	fixture{
+		comercianteIndependiente.comision(9)
+		minimoNoImponible.minimo(5)
+	}
 	test "Ursula compra la mascara oscura a Pastoriza" {
 		ursula.comprarAComerciante(mascaraOscura,pastoriza)
 		assert.equals(89.1,ursula.monedasOro())
@@ -26,26 +29,26 @@ describe "Tests del Cuarto Punto"{
 	}
 	
 	test "Ursula compra la mascara oscura a Pastoriza Reacategorizado" {
-		pastoriza = pastoriza.recategorizar()
+		pastoriza.recategorizar()
 		ursula.comprarAComerciante(mascaraOscura,pastoriza)
 		assert.equals(88.2,ursula.monedasOro())
 	}
 	
 	test "Ursula compra la mascara oscura a Pastoriza 2 veces Reacategorizado" {
-		pastoriza = pastoriza.recategorizar()
-		pastoriza = pastoriza.recategorizar()
+		pastoriza.recategorizar()
+		pastoriza.recategorizar()
 		ursula.comprarAComerciante(mascaraOscura,pastoriza)
 		assert.equals(87.9,ursula.monedasOro())
 	}
 	
 	test "Ursula compra la mascara oscura a Prieto Reacategorizado" {
-		prieto = prieto.recategorizar()
+		prieto.recategorizar()
 		ursula.comprarAComerciante(mascaraOscura,prieto)
 		assert.equals(88.25,ursula.monedasOro())
 	}
 	
 	test "Ursula compra la mascara oscura a Fermepin Reacategorizado" {
-		fermepin = fermepin.recategorizar()
+		fermepin.recategorizar()
 		ursula.comprarAComerciante(mascaraOscura,fermepin)
 		assert.equals(88.25,ursula.monedasOro())
 	}
