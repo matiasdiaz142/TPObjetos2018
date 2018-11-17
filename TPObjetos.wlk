@@ -284,18 +284,18 @@ object ninguno inherits Refuerzo{
 
 class Comerciante{
 	var property tipoImpositivo
-	method precioConImpuesto(artefacto)=tipoImpositivo.precioConImpuesto(artefacto)
+	method precioConImpuesto(artefacto)= self.precioBaseArtefacto(artefacto) + tipoImpositivo.impuesto(artefacto)
 	method recategorizar(){
 		tipoImpositivo.recategorizar(self)
 	}
+	method precioBaseArtefacto(artefacto) = artefacto.precio()
 }
 
 object comercianteIndependiente{
 	var property comision
-	method precioConImpuesto(artefacto){
-		return self.precioBaseArtefacto(artefacto)*(1 + comision/100)
+	method impuesto(artefacto){
+		return artefacto.precio()*(comision/100)
 	}
-	method precioBaseArtefacto(artefacto) = artefacto.precio()
 	method recategorizar(comerciante){
 		if ((comision * 2) > 21 ){
 			comerciante.tipoImpositivo(comercianteRegistrado)
@@ -308,27 +308,26 @@ object comercianteIndependiente{
 
 object comercianteRegistrado{
 	const iva = 21
-	method precioConImpuesto(artefacto){
-		return self.precioBaseArtefacto(artefacto)*(1 + iva/100)
+	method impuesto(artefacto){
+		return artefacto.precio()*(iva/100)
 	}
-	method precioBaseArtefacto(artefacto) = artefacto.precio()
+
 	method recategorizar(comerciante){
 		comerciante.tipoImpositivo(comercianteImpuestoALasGanancias)
 	}
 }
 
 object comercianteImpuestoALasGanancias{
-	method precioConImpuesto(artefacto){
+	method impuesto(artefacto){
 		if(artefacto.precio() < minimoNoImponible.minimo()){
-			return self.precioBaseArtefacto(artefacto)
+			return 0 //Sin recargo
 		}else{
-			return self.precioBaseArtefacto(artefacto) + self.diferenciaImportes(artefacto)*(35/100)
+			return self.diferenciaImportes(artefacto)*(35/100)
 		}	
 	}
 	method diferenciaImportes(artefacto){
-		return (self.precioBaseArtefacto(artefacto)-minimoNoImponible.minimo())
+		return (artefacto.precio()-minimoNoImponible.minimo())
 	}
-	method precioBaseArtefacto(artefacto) = artefacto.precio()
 	method recategorizar(comerciante){}
 }
 
